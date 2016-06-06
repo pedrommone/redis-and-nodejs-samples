@@ -1,4 +1,4 @@
-// docker run --name redis --rm redis:3.2.0
+// docker run -it --name redis --rm redis:3.2.0
 // docker run -it --link redis:redis --rm redis:3.2.0 redis-cli -h redis -p 6379
 // docker run -it --link redis:redis --volume ~/Desktop/LiveRedis/:/app --rm node:6.2.0 node /app/mark.js
 
@@ -6,10 +6,11 @@ var redis = require("redis"),
     bluebird = require('bluebird'),
     total = 100000;
 
-
 bluebird.promisifyAll(redis.RedisClient.prototype);
 
-client = redis.createClient();
+client = redis.createClient({
+    "host": "redis",
+});
 
 console.log(`Escrita e leitura de ${total} objetos`);
 
@@ -41,6 +42,6 @@ var timeUnitGet = endUnitGet - startUnitGet;
 
 console.log(`Tempo de execucao de leitura: ${timeUnitGet}ms`);
 
-// client.quit();
+client.quit();
 
-// process.exit();
+process.exit();
