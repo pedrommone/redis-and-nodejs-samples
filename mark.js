@@ -19,9 +19,7 @@ var startUnitSet = new Date().getTime();
 
 for (i = 0; i < total; ++i) {
     client.setAsync(`chave-${i}`, `valor-${i}`)
-      .then(data =>
-        console.log(data)
-      )
+      .then(data => data)
       .catch(err => console.log(err));
 }
 
@@ -33,7 +31,9 @@ console.log(`Tempo de execucao de escrita: ${timeUnitSet}ms`);
 var startUnitGet = new Date().getTime();
 
 for (j = 0; j < total; ++j) {
-
+  client.getAsync(`chave-${j}`)
+    .then(console.log)
+    .catch(err => console.log(err));
 }
 
 var endUnitGet = new Date().getTime();

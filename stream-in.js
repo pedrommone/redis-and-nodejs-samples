@@ -1,18 +1,32 @@
 var redis = require("redis");
-var sub = redis.createClient({"host": "redis"});
+var readline = require('readline');
+var bluebird = require('bluebird');
 
-sub.on("subscribe", function (channel, count) {
+bluebird.promisifyAll(redis.RedisClient.prototype);
 
-    var readline = require('readline');
-    var rl = readline.createInterface(process.stdin, process.stdout);
+var sub = redis.createClient();
+var rl = readline.createInterface(process.stdin, process.stdout);
+
+
+// sub.on('subscribe', function (channel, count) {
+//
+//
     rl.setPrompt('guess> ');
     rl.prompt();
-    rl.on('line', function(line) {
-        if (line === "right") rl.close();
-        rl.prompt();
-    }).on('close',function(){
-        sub.quit();
+
+    rl.on('line', line => {
+        if (line === "quit") rl.close();
+
+        sub.getAsync(`chave-${line}`)
+          .then(data => {
+            console.log(data);
+            rl.prompt();
+          })
+          .catch(err => console.log(err));
+
+    }).on('close', () => {
+        //sub.quit();
         process.exit(0);
     });
-
-});
+//
+// });
